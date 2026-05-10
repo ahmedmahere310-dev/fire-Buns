@@ -43,42 +43,42 @@
 :root {
   --radius: 0.875rem;
 
-  /* Fire Buns — Eye-friendly Dark Theme (WCAG AA) */
-  --background: oklch(0.18 0.012 50);             /* soft warm charcoal, less harsh than pure black */
-  --foreground: oklch(0.95 0.012 85);             /* warm cream, slightly off-white to reduce glare */
+  /* Fire Buns — Low-glare Dark Theme (eye-comfort tuned) */
+  --background: oklch(0.15 0.01 45);              /* deeper, calmer charcoal */
+  --foreground: oklch(0.9 0.012 85);              /* softer cream, lower luminance to reduce glare */
 
-  --cream: oklch(0.95 0.012 85);
-  --charcoal: oklch(0.95 0.012 85);
-  --flame: oklch(0.74 0.17 50);                   /* slightly desaturated orange — readable, less buzzy */
+  --cream: oklch(0.9 0.012 85);
+  --charcoal: oklch(0.9 0.012 85);
+  --flame: oklch(0.66 0.14 50);                   /* muted ember — warm but gentle on eyes */
 
-  --card: oklch(0.23 0.014 50);
+  --card: oklch(0.2 0.012 45);
   --card-foreground: var(--foreground);
-  --popover: oklch(0.23 0.014 50);
+  --popover: oklch(0.2 0.012 45);
   --popover-foreground: var(--foreground);
 
-  --primary: oklch(0.74 0.17 50);
-  --primary-foreground: oklch(0.16 0.015 50);
+  --primary: oklch(0.66 0.14 50);
+  --primary-foreground: oklch(0.14 0.012 45);
 
-  --secondary: oklch(0.26 0.014 50);
+  --secondary: oklch(0.23 0.012 45);
   --secondary-foreground: var(--foreground);
 
-  --muted: oklch(0.26 0.014 50);
-  --muted-foreground: oklch(0.78 0.018 70);       /* boosted for AA on dark surfaces */
+  --muted: oklch(0.23 0.012 45);
+  --muted-foreground: oklch(0.74 0.015 70);
 
-  --accent: oklch(0.8 0.14 70);
-  --accent-foreground: oklch(0.18 0.015 50);
+  --accent: oklch(0.72 0.11 70);
+  --accent-foreground: oklch(0.15 0.012 45);
 
-  --destructive: oklch(0.62 0.2 27);
-  --destructive-foreground: oklch(0.98 0.01 80);
+  --destructive: oklch(0.58 0.16 27);
+  --destructive-foreground: oklch(0.95 0.01 80);
 
-  --border: oklch(0.32 0.015 50);
-  --input: oklch(0.32 0.015 50);
-  --ring: oklch(0.78 0.17 50);                    /* visible focus ring */
+  --border: oklch(0.28 0.012 45);
+  --input: oklch(0.28 0.012 45);
+  --ring: oklch(0.7 0.14 50);
 
-  --gradient-flame: linear-gradient(135deg, oklch(0.76 0.18 55), oklch(0.62 0.2 35));
-  --gradient-ember: linear-gradient(180deg, oklch(0.23 0.014 50), oklch(0.14 0.012 50));
-  --shadow-flame: 0 18px 50px -16px oklch(0.6 0.2 40 / 0.5);
-  --shadow-card: 0 10px 30px -12px oklch(0 0 0 / 0.4);
+  --gradient-flame: linear-gradient(135deg, oklch(0.68 0.14 55), oklch(0.54 0.15 35));
+  --gradient-ember: linear-gradient(180deg, oklch(0.2 0.012 45), oklch(0.12 0.01 45));
+  --shadow-flame: 0 18px 50px -18px oklch(0.5 0.16 40 / 0.45);
+  --shadow-card: 0 10px 30px -14px oklch(0 0 0 / 0.45);
 }
 
 @layer base {
@@ -87,10 +87,16 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-body);
     background-image:
-      radial-gradient(circle at 12% 0%, oklch(0.74 0.17 50 / 0.12), transparent 50%),
-      radial-gradient(circle at 90% 100%, oklch(0.74 0.17 50 / 0.08), transparent 55%);
+      radial-gradient(circle at 12% 0%, oklch(0.66 0.14 50 / 0.08), transparent 50%),
+      radial-gradient(circle at 90% 100%, oklch(0.66 0.14 50 / 0.05), transparent 55%);
     min-height: 100vh;
+  }
+  /* Force consistent font on mobile (override iOS/Android system fallbacks) */
+  html, body, button, input, select, textarea {
+    font-family: var(--font-body);
+    -webkit-text-size-adjust: 100%;
   }
   h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0.01em; }
 
