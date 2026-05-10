@@ -142,14 +142,6 @@ function Home() {
             >
               <Tag className="w-5 h-5 text-flame" /> اطلب العروض على واتساب
             </a>
-            <a
-              href={wa("عايز أعمل تجميع طلبات لمجموعة من Fire Buns")}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-background/40 text-primary-foreground font-bold px-6 py-3 hover:bg-background/10 transition"
-            >
-              <Users className="w-5 h-5" /> تجميع طلبات
-            </a>
           </div>
         </div>
       </section>
