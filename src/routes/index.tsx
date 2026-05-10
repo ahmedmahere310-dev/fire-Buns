@@ -127,14 +127,44 @@ function Home() {
           <h2 className="text-5xl mb-6">عروض فاير بانز</h2>
           <ul className="grid md:grid-cols-3 gap-6">
             {RESTAURANT.offers.map((o, i) => (
-              <li key={i} className="bg-white/15 backdrop-blur rounded-2xl p-6 leading-8 font-semibold">
+              <li key={i} className="bg-black/20 backdrop-blur rounded-2xl p-6 leading-8 font-semibold">
                 <span className="font-display text-3xl block mb-2">0{i + 1}.</span>
                 {o}
               </li>
             ))}
           </ul>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <a
+              href={wa("ممكن أعرف العروض المتاحة دلوقتي في Fire Buns؟")}
+              target="_blank"
+              rel="noopener"
+              className="inline-flex items-center gap-2 rounded-full bg-background text-foreground font-bold px-6 py-3 hover:bg-card transition"
+            >
+              <Tag className="w-5 h-5 text-flame" /> اطلب العروض على واتساب
+            </a>
+            <a
+              href={wa("عايز أعمل تجميع طلبات لمجموعة من Fire Buns")}
+              target="_blank"
+              rel="noopener"
+              className="inline-flex items-center gap-2 rounded-full border-2 border-background/40 text-primary-foreground font-bold px-6 py-3 hover:bg-background/10 transition"
+            >
+              <Users className="w-5 h-5" /> تجميع طلبات
+            </a>
+          </div>
         </div>
       </section>
+
+      {/* Floating WhatsApp */}
+      <a
+        href={wa("عايز أطلب من Fire Buns")}
+        target="_blank"
+        rel="noopener"
+        aria-label="اطلب على واتساب"
+        className="fixed bottom-5 left-5 z-50 inline-flex items-center gap-2 rounded-full bg-gradient-flame text-primary-foreground font-bold px-5 py-3 shadow-flame hover:scale-105 transition"
+      >
+        <MessageCircle className="w-5 h-5" />
+        اطلب الآن
+      </a>
 
       {/* CONTACT */}
       <section className="mx-auto max-w-7xl px-6 py-16 grid lg:grid-cols-2 gap-8">
