@@ -93,31 +93,37 @@ function Home() {
           </Link>
         </div>
         <div className="grid md:grid-cols-2 gap-5">
-          {featured.map((it) => (
-            <div key={it.nameAr} className="rounded-2xl bg-gradient-ember text-cream p-6 shadow-flame">
-              <div className="flex justify-between items-start gap-4">
-                <div>
-                  <h3 className="text-3xl">{it.nameAr}</h3>
-                  <div className="font-display text-flame tracking-wider">{it.nameEn}</div>
-                  <p className="text-cream/70 mt-3 leading-7 text-sm">{it.desc}</p>
-                </div>
-                <div className="flex gap-2">
-                  {typeof it.price !== "number" && it.price.S && (
-                    <div className="text-center bg-flame text-primary-foreground rounded-full w-14 h-14 flex flex-col justify-center">
-                      <span className="text-[10px] font-bold">S</span>
-                      <span className="font-display text-xl leading-none">{it.price.S}</span>
-                    </div>
-                  )}
-                  {typeof it.price !== "number" && it.price.D && (
-                    <div className="text-center bg-cream text-charcoal rounded-full w-14 h-14 flex flex-col justify-center">
-                      <span className="text-[10px] font-bold">D</span>
-                      <span className="font-display text-xl leading-none">{it.price.D}</span>
-                    </div>
-                  )}
+          {featured.map((it) => {
+            const sizes =
+              typeof it.price === "number"
+                ? [{ k: "", v: it.price }]
+                : (["S", "M", "L", "D"] as const)
+                    .filter((k) => typeof it.price !== "number" && (it.price as Record<string, number>)[k])
+                    .map((k) => ({ k, v: (it.price as Record<string, number>)[k] }));
+            return (
+              <div key={it.nameAr} className="rounded-2xl bg-gradient-ember text-cream p-6 shadow-flame border border-border">
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <h3 className="text-3xl">{it.nameAr}</h3>
+                    <div className="font-display text-flame tracking-wider">{it.nameEn}</div>
+                    <p className="text-cream/70 mt-3 leading-7 text-sm">{it.desc}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {sizes.map((s) => (
+                      <div
+                        key={s.k}
+                        className="inline-flex items-baseline gap-1.5 rounded-full bg-flame/15 border border-flame/40 px-4 py-1.5"
+                      >
+                        {s.k && <span className="text-[10px] font-bold text-flame">{s.k}</span>}
+                        <span className="font-display text-xl leading-none text-cream">{s.v}</span>
+                        <span className="text-[10px] text-cream/60">ج</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
