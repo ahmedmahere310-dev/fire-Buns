@@ -154,17 +154,7 @@ function Home() {
         </div>
       </section>
 
-      {/* Floating WhatsApp */}
-      <a
-        href={wa("عايز أطلب من Fire Buns")}
-        target="_blank"
-        rel="noopener"
-        aria-label="اطلب على واتساب"
-        className="fixed bottom-5 left-5 z-50 inline-flex items-center gap-2 rounded-full bg-gradient-flame text-primary-foreground font-bold px-5 py-3 shadow-flame hover:scale-105 transition"
-      >
-        <MessageCircle className="w-5 h-5" />
-        اطلب الآن
-      </a>
+      {/* Floating WhatsApp removed — cart button handles ordering */}
 
       {/* CONTACT */}
       <section className="mx-auto max-w-7xl px-6 py-16 grid lg:grid-cols-2 gap-8">
