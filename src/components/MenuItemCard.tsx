@@ -1,7 +1,7 @@
 import type { MenuItem } from "@/data/menu";
 import { Flame, Plus, Share2 } from "lucide-react";
 import { useCart } from "@/lib/cart";
-import { RESTAURANT } from "@/data/menu";
+
 
 const SIZE_LABEL: Record<string, string> = {
   S: "S", M: "M", L: "L", D: "D", jar: "برطمان", add: "إضافة",
