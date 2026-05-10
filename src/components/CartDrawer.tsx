@@ -113,6 +113,7 @@ export function CartDrawer() {
       alert("من فضلك اكتب الاسم والموبايل والعنوان");
       return;
     }
+    persist({ name, phone, address });
     setOpen(false);
     setCooking(true);
   }
