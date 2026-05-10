@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart";
 import { RESTAURANT } from "@/data/menu";
-import { X, Plus, Minus, Trash2, MessageCircle, ShoppingBag, MapPin, Crosshair, Loader2 } from "lucide-react";
+import { X, Plus, Minus, Trash2, MessageCircle, ShoppingBag, MapPin, Crosshair, Loader2, User, Edit3 } from "lucide-react";
 import { CookingAnimation } from "./CookingAnimation";
+
+const STORAGE_KEY = "firebuns_customer_v1";
+type SavedCustomer = { name: string; phone: string; address: string };
 
 export function CartDrawer() {
   const { lines, setQty, remove, total, count, open, setOpen, clear } = useCart();
@@ -13,6 +16,36 @@ export function CartDrawer() {
   const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
   const [cooking, setCooking] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
+  const [saved, setSaved] = useState<SavedCustomer | null>(null);
+  const [editingSaved, setEditingSaved] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const s = JSON.parse(raw) as SavedCustomer;
+        setSaved(s);
+        setName(s.name || "");
+        setPhone(s.phone || "");
+        setAddress(s.address || "");
+      }
+    } catch {}
+  }, []);
+
+  function persist(next: SavedCustomer) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      setSaved(next);
+    } catch {}
+  }
+
+  function clearSaved() {
+    if (!confirm("تمسح بياناتك المحفوظة؟")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    setSaved(null);
+    setName(""); setPhone(""); setAddress("");
+    setEditingSaved(false);
+  }
   const [mapHint, setMapHint] = useState(false);
 
   function tryGeolocation(attempt: number) {
@@ -80,6 +113,7 @@ export function CartDrawer() {
       alert("من فضلك اكتب الاسم والموبايل والعنوان");
       return;
     }
+    persist({ name, phone, address });
     setOpen(false);
     setCooking(true);
   }
@@ -178,41 +212,80 @@ export function CartDrawer() {
                   استلام من المحل
                 </button>
               </div>
-              <input
-                value={name} onChange={(e) => setName(e.target.value)}
-                placeholder="الاسم" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
-              />
-              <input
-                value={phone} onChange={(e) => setPhone(e.target.value)}
-                inputMode="tel" placeholder="رقم الموبايل"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
-              />
-              {orderType === "delivery" && (
+
+              {saved && !editingSaved ? (
+                <div className="rounded-xl border border-flame/30 bg-flame/5 p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-bold text-flame">
+                      <User className="w-4 h-4" />
+                      بياناتك المحفوظة
+                    </div>
+                    <div className="flex gap-1">
+                      <button onClick={() => setEditingSaved(true)} className="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-full hover:bg-flame/10 text-flame">
+                        <Edit3 className="w-3 h-3" /> تعديل
+                      </button>
+                      <button onClick={clearSaved} className="text-xs px-2 py-1 rounded-full hover:bg-destructive/10 text-destructive">
+                        مسح
+                      </button>
+                    </div>
+                  </div>
+                  <div className="text-sm space-y-0.5">
+                    <div><span className="text-muted-foreground">الاسم:</span> <span className="font-bold">{saved.name}</span></div>
+                    <div><span className="text-muted-foreground">الموبايل:</span> <span className="font-bold">{saved.phone}</span></div>
+                    {orderType === "delivery" && saved.address && (
+                      <div className="break-words"><span className="text-muted-foreground">العنوان:</span> <span className="font-bold">{saved.address}</span></div>
+                    )}
+                  </div>
+                </div>
+              ) : null}
+              {(!saved || editingSaved) && (
                 <>
-                  <textarea
-                    value={address} onChange={(e) => setAddress(e.target.value)}
-                    rows={3} placeholder="العنوان بالتفصيل أو الصق لينك من Google Maps"
+                  <input
+                    value={name} onChange={(e) => setName(e.target.value)}
+                    placeholder="الاسم" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
+                  />
+                  <input
+                    value={phone} onChange={(e) => setPhone(e.target.value)}
+                    inputMode="tel" placeholder="رقم الموبايل"
                     className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
                   />
-                  <div className="flex gap-2">
+                  {orderType === "delivery" && (
+                    <>
+                      <textarea
+                        value={address} onChange={(e) => setAddress(e.target.value)}
+                        rows={3} placeholder="العنوان بالتفصيل أو الصق لينك من Google Maps"
+                        className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={pickCurrentLocation}
+                          disabled={geoLoading}
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-flame/40 bg-flame/10 text-flame text-xs font-bold py-2 hover:bg-flame/20 transition disabled:opacity-60"
+                        >
+                          {geoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair className="w-4 h-4" />}
+                          موقعي الحالي (GPS)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={pickFromMap}
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-border text-xs font-bold py-2 hover:border-flame hover:text-flame transition"
+                        >
+                          <MapPin className="w-4 h-4" />
+                          اختار من الخريطة
+                        </button>
+                      </div>
+                    </>
+                  )}
+                  {editingSaved && (
                     <button
                       type="button"
-                      onClick={pickCurrentLocation}
-                      disabled={geoLoading}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-flame/40 bg-flame/10 text-flame text-xs font-bold py-2 hover:bg-flame/20 transition disabled:opacity-60"
+                      onClick={() => { persist({ name, phone, address }); setEditingSaved(false); }}
+                      className="w-full rounded-full bg-flame/15 text-flame border border-flame/40 text-sm font-bold py-2 hover:bg-flame/25"
                     >
-                      {geoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair className="w-4 h-4" />}
-                      موقعي الحالي (GPS)
+                      حفظ التعديلات
                     </button>
-                    <button
-                      type="button"
-                      onClick={pickFromMap}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-border text-xs font-bold py-2 hover:border-flame hover:text-flame transition"
-                    >
-                      <MapPin className="w-4 h-4" />
-                      اختار من الخريطة
-                    </button>
-                  </div>
+                  )}
                 </>
               )}
               <textarea
