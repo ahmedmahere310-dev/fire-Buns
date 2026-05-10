@@ -13,13 +13,9 @@ export function CartDrawer() {
   const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
   const [cooking, setCooking] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
+  const [mapHint, setMapHint] = useState(false);
 
-  function pickCurrentLocation() {
-    if (!navigator.geolocation) {
-      alert("متصفحك مش بيدعم تحديد الموقع");
-      return;
-    }
-    setGeoLoading(true);
+  function tryGeolocation(attempt: number) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -27,17 +23,38 @@ export function CartDrawer() {
         setAddress((prev) => (prev ? `${prev}\n📍 ${link}` : `📍 ${link}`));
         setGeoLoading(false);
       },
-      () => {
-        alert("معرفناش نحدد موقعك. اكتب العنوان يدوي أو اختار من الخريطة.");
+      (err) => {
+        if (attempt < 2) {
+          // محاولة تانية
+          setTimeout(() => tryGeolocation(attempt + 1), 600);
+          return;
+        }
         setGeoLoading(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          alert("⚠️ لازم تفعّل إذن تحديد الموقع (GPS) من إعدادات المتصفح وتحاول تاني، أو استخدم اختار من الخريطة.");
+        } else {
+          alert("⚠️ معرفناش نحدد موقعك. تأكد إن الـ GPS مفعّل وحاول تاني، أو اختار من الخريطة.");
+        }
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
 
+  function pickCurrentLocation() {
+    if (!navigator.geolocation) {
+      alert("⚠️ متصفحك مش بيدعم تحديد الموقع. فعّل الـ GPS أو استخدم اختار من الخريطة.");
+      return;
+    }
+    setGeoLoading(true);
+    tryGeolocation(1);
+  }
+
   function pickFromMap() {
-    window.open("https://www.google.com/maps", "_blank");
-    alert("اختار النقطة على الخريطة، اضغط Share → Copy link، وارجع الصق اللينك في خانة العنوان.");
+    setMapHint(true);
+  }
+
+  function openMapsNow() {
+    window.open("https://www.google.com/maps", "_blank", "noopener,noreferrer");
   }
 
   function buildMessage() {
