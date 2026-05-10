@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroBurger from "@/assets/hero-burger.jpg";
 import { RESTAURANT, menu } from "@/data/menu";
-import { Flame, Phone, MapPin, Sparkles, Truck, Leaf, Clock, MessageCircle, Users, Tag } from "lucide-react";
+import { Flame, Phone, MapPin, Sparkles, Truck, Leaf, Clock, MessageCircle, Tag } from "lucide-react";
 
 const wa = (text: string) => `https://wa.me/${RESTAURANT.whatsappNumber}?text=${encodeURIComponent(text)}`;
 
@@ -141,14 +141,6 @@ function Home() {
               className="inline-flex items-center gap-2 rounded-full bg-background text-foreground font-bold px-6 py-3 hover:bg-card transition"
             >
               <Tag className="w-5 h-5 text-flame" /> اطلب العروض على واتساب
-            </a>
-            <a
-              href={wa("عايز أعمل تجميع طلبات لمجموعة من Fire Buns")}
-              target="_blank"
-              rel="noopener"
-              className="inline-flex items-center gap-2 rounded-full border-2 border-background/40 text-primary-foreground font-bold px-6 py-3 hover:bg-background/10 transition"
-            >
-              <Users className="w-5 h-5" /> تجميع طلبات
             </a>
           </div>
         </div>

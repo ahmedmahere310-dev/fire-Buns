@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { RESTAURANT } from "@/data/menu";
-import { Phone, MapPin, Clock, Navigation, MessageCircle, Users, Tag } from "lucide-react";
+import { Phone, MapPin, Clock, Navigation, MessageCircle, Tag } from "lucide-react";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "تواصل معانا — Fire Buns" },
-      { name: "description", content: "موقع فاير بانز على الخريطة، ساعات العمل، أرقام التواصل، واطلب أو اعمل تجميع طلبات أو اسأل عن العروض على واتساب." },
+      { name: "description", content: "موقع فاير بانز على الخريطة، ساعات العمل، أرقام التواصل، واطلب أو اسأل عن العروض على واتساب." },
       { property: "og:title", content: "تواصل مع Fire Buns" },
       { property: "og:description", content: "اتجاهات Google Maps، ساعات العمل، وطلب على واتساب." },
     ],
@@ -18,7 +18,6 @@ const wa = (text: string) =>
   `https://wa.me/${RESTAURANT.whatsappNumber}?text=${encodeURIComponent(text)}`;
 
 const waOrder = wa("السلام عليكم 👋\nعايز أطلب من Fire Buns:\n- \nالعنوان: ");
-const waGroup = wa("السلام عليكم 👋\nعايز أعمل تجميع طلبات لمجموعة من Fire Buns، ممكن تساعدوني؟");
 const waOffers = wa("السلام عليكم 👋\nممكن أعرف العروض المتاحة دلوقتي في Fire Buns؟");
 
 function ContactPage() {
@@ -31,7 +30,7 @@ function ContactPage() {
       </header>
 
       {/* WhatsApp CTAs */}
-      <section className="grid md:grid-cols-3 gap-4 mb-14">
+      <section className="grid md:grid-cols-2 gap-4 mb-14">
         <a
           href={waOrder}
           target="_blank"
@@ -41,16 +40,6 @@ function ContactPage() {
           <MessageCircle className="w-8 h-8 mb-3" />
           <h3 className="text-2xl font-bold">اطلب على واتساب</h3>
           <p className="text-sm mt-2 opacity-90">اكتب طلبك وعنوانك ورد عليك خلال دقايق</p>
-        </a>
-        <a
-          href={waGroup}
-          target="_blank"
-          rel="noopener"
-          className="group rounded-2xl bg-card border border-border p-6 shadow-card hover:border-flame hover:-translate-y-1 transition"
-        >
-          <Users className="w-8 h-8 mb-3 text-flame" />
-          <h3 className="text-2xl text-charcoal">تجميع طلبات</h3>
-          <p className="text-sm mt-2 text-muted-foreground">طالب جامعة أو شغل؟ اعمل تجميع للمجموعة بخصم خاص</p>
         </a>
         <a
           href={waOffers}
