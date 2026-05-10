@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useCart } from "@/lib/cart";
 import { RESTAURANT } from "@/data/menu";
-import { X, Plus, Minus, Trash2, MessageCircle, ShoppingBag } from "lucide-react";
+import { X, Plus, Minus, Trash2, MessageCircle, ShoppingBag, MapPin, Crosshair, Loader2 } from "lucide-react";
 import { CookingAnimation } from "./CookingAnimation";
 
 export function CartDrawer() {
@@ -12,6 +12,33 @@ export function CartDrawer() {
   const [notes, setNotes] = useState("");
   const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
   const [cooking, setCooking] = useState(false);
+  const [geoLoading, setGeoLoading] = useState(false);
+
+  function pickCurrentLocation() {
+    if (!navigator.geolocation) {
+      alert("متصفحك مش بيدعم تحديد الموقع");
+      return;
+    }
+    setGeoLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        const link = `https://maps.google.com/?q=${latitude},${longitude}`;
+        setAddress((prev) => (prev ? `${prev}\n📍 ${link}` : `📍 ${link}`));
+        setGeoLoading(false);
+      },
+      () => {
+        alert("معرفناش نحدد موقعك. اكتب العنوان يدوي أو اختار من الخريطة.");
+        setGeoLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000 }
+    );
+  }
+
+  function pickFromMap() {
+    window.open("https://www.google.com/maps", "_blank");
+    alert("اختار النقطة على الخريطة، اضغط Share → Copy link، وارجع الصق اللينك في خانة العنوان.");
+  }
 
   function buildMessage() {
     const lns = lines
@@ -144,11 +171,32 @@ export function CartDrawer() {
                 className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
               />
               {orderType === "delivery" && (
-                <textarea
-                  value={address} onChange={(e) => setAddress(e.target.value)}
-                  rows={2} placeholder="العنوان بالتفصيل"
-                  className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
-                />
+                <>
+                  <textarea
+                    value={address} onChange={(e) => setAddress(e.target.value)}
+                    rows={3} placeholder="العنوان بالتفصيل أو الصق لينك من Google Maps"
+                    className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={pickCurrentLocation}
+                      disabled={geoLoading}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-flame/40 bg-flame/10 text-flame text-xs font-bold py-2 hover:bg-flame/20 transition disabled:opacity-60"
+                    >
+                      {geoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair className="w-4 h-4" />}
+                      موقعي الحالي (GPS)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={pickFromMap}
+                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-border text-xs font-bold py-2 hover:border-flame hover:text-flame transition"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      اختار من الخريطة
+                    </button>
+                  </div>
+                </>
               )}
               <textarea
                 value={notes} onChange={(e) => setNotes(e.target.value)}
