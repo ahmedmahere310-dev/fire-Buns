@@ -238,41 +238,54 @@ export function CartDrawer() {
                   </div>
                 </div>
               ) : null}
-              <input
-                value={name} onChange={(e) => setName(e.target.value)}
-                placeholder="الاسم" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
-              />
-              <input
-                value={phone} onChange={(e) => setPhone(e.target.value)}
-                inputMode="tel" placeholder="رقم الموبايل"
-                className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
-              />
-              {orderType === "delivery" && (
+              {(!saved || editingSaved) && (
                 <>
-                  <textarea
-                    value={address} onChange={(e) => setAddress(e.target.value)}
-                    rows={3} placeholder="العنوان بالتفصيل أو الصق لينك من Google Maps"
+                  <input
+                    value={name} onChange={(e) => setName(e.target.value)}
+                    placeholder="الاسم" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
+                  />
+                  <input
+                    value={phone} onChange={(e) => setPhone(e.target.value)}
+                    inputMode="tel" placeholder="رقم الموبايل"
                     className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
                   />
-                  <div className="flex gap-2">
+                  {orderType === "delivery" && (
+                    <>
+                      <textarea
+                        value={address} onChange={(e) => setAddress(e.target.value)}
+                        rows={3} placeholder="العنوان بالتفصيل أو الصق لينك من Google Maps"
+                        className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
+                      />
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={pickCurrentLocation}
+                          disabled={geoLoading}
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-flame/40 bg-flame/10 text-flame text-xs font-bold py-2 hover:bg-flame/20 transition disabled:opacity-60"
+                        >
+                          {geoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair className="w-4 h-4" />}
+                          موقعي الحالي (GPS)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={pickFromMap}
+                          className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-border text-xs font-bold py-2 hover:border-flame hover:text-flame transition"
+                        >
+                          <MapPin className="w-4 h-4" />
+                          اختار من الخريطة
+                        </button>
+                      </div>
+                    </>
+                  )}
+                  {editingSaved && (
                     <button
                       type="button"
-                      onClick={pickCurrentLocation}
-                      disabled={geoLoading}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-flame/40 bg-flame/10 text-flame text-xs font-bold py-2 hover:bg-flame/20 transition disabled:opacity-60"
+                      onClick={() => { persist({ name, phone, address }); setEditingSaved(false); }}
+                      className="w-full rounded-full bg-flame/15 text-flame border border-flame/40 text-sm font-bold py-2 hover:bg-flame/25"
                     >
-                      {geoLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Crosshair className="w-4 h-4" />}
-                      موقعي الحالي (GPS)
+                      حفظ التعديلات
                     </button>
-                    <button
-                      type="button"
-                      onClick={pickFromMap}
-                      className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-border text-xs font-bold py-2 hover:border-flame hover:text-flame transition"
-                    >
-                      <MapPin className="w-4 h-4" />
-                      اختار من الخريطة
-                    </button>
-                  </div>
+                  )}
                 </>
               )}
               <textarea
