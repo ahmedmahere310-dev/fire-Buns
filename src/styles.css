@@ -43,56 +43,71 @@
 :root {
   --radius: 0.875rem;
 
-  /* Fire Buns — Dark Theme */
-  --background: oklch(0.16 0.02 40);             /* deep charcoal */
-  --foreground: oklch(0.96 0.015 80);            /* warm cream text */
+  /* Fire Buns — Eye-friendly Dark Theme (WCAG AA) */
+  --background: oklch(0.18 0.012 50);             /* soft warm charcoal, less harsh than pure black */
+  --foreground: oklch(0.95 0.012 85);             /* warm cream, slightly off-white to reduce glare */
 
-  --cream: oklch(0.96 0.015 80);
-  --charcoal: oklch(0.96 0.015 80);              /* aliased to cream so headings stay readable */
-  --flame: oklch(0.72 0.2 45);                   /* signature orange */
+  --cream: oklch(0.95 0.012 85);
+  --charcoal: oklch(0.95 0.012 85);
+  --flame: oklch(0.74 0.17 50);                   /* slightly desaturated orange — readable, less buzzy */
 
-  --card: oklch(0.21 0.02 40);
+  --card: oklch(0.23 0.014 50);
   --card-foreground: var(--foreground);
-  --popover: oklch(0.21 0.02 40);
+  --popover: oklch(0.23 0.014 50);
   --popover-foreground: var(--foreground);
 
-  --primary: oklch(0.72 0.2 45);
-  --primary-foreground: oklch(0.14 0.02 40);
+  --primary: oklch(0.74 0.17 50);
+  --primary-foreground: oklch(0.16 0.015 50);
 
-  --secondary: oklch(0.24 0.02 40);
+  --secondary: oklch(0.26 0.014 50);
   --secondary-foreground: var(--foreground);
 
-  --muted: oklch(0.24 0.02 40);
-  --muted-foreground: oklch(0.72 0.02 60);
+  --muted: oklch(0.26 0.014 50);
+  --muted-foreground: oklch(0.78 0.018 70);       /* boosted for AA on dark surfaces */
 
-  --accent: oklch(0.78 0.16 65);
-  --accent-foreground: oklch(0.16 0.02 40);
+  --accent: oklch(0.8 0.14 70);
+  --accent-foreground: oklch(0.18 0.015 50);
 
-  --destructive: oklch(0.62 0.22 27);
+  --destructive: oklch(0.62 0.2 27);
   --destructive-foreground: oklch(0.98 0.01 80);
 
-  --border: oklch(0.3 0.02 40);
-  --input: oklch(0.3 0.02 40);
-  --ring: oklch(0.72 0.2 45);
+  --border: oklch(0.32 0.015 50);
+  --input: oklch(0.32 0.015 50);
+  --ring: oklch(0.78 0.17 50);                    /* visible focus ring */
 
-  --gradient-flame: linear-gradient(135deg, oklch(0.74 0.21 50), oklch(0.6 0.22 30));
-  --gradient-ember: linear-gradient(180deg, oklch(0.21 0.02 40), oklch(0.12 0.02 40));
-  --shadow-flame: 0 18px 50px -12px oklch(0.6 0.22 35 / 0.55);
-  --shadow-card: 0 10px 30px -12px oklch(0 0 0 / 0.45);
+  --gradient-flame: linear-gradient(135deg, oklch(0.76 0.18 55), oklch(0.62 0.2 35));
+  --gradient-ember: linear-gradient(180deg, oklch(0.23 0.014 50), oklch(0.14 0.012 50));
+  --shadow-flame: 0 18px 50px -16px oklch(0.6 0.2 40 / 0.5);
+  --shadow-card: 0 10px 30px -12px oklch(0 0 0 / 0.4);
 }
 
 @layer base {
   * { border-color: var(--color-border); }
-  html { font-family: var(--font-body); }
+  html { font-family: var(--font-body); -webkit-font-smoothing: antialiased; }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
     background-image:
-      radial-gradient(circle at 12% 0%, oklch(0.72 0.2 45 / 0.18), transparent 45%),
-      radial-gradient(circle at 90% 100%, oklch(0.72 0.2 45 / 0.12), transparent 50%);
+      radial-gradient(circle at 12% 0%, oklch(0.74 0.17 50 / 0.12), transparent 50%),
+      radial-gradient(circle at 90% 100%, oklch(0.74 0.17 50 / 0.08), transparent 55%);
     min-height: 100vh;
   }
   h1, h2, h3 { font-family: var(--font-display); letter-spacing: 0.01em; }
+
+  /* Accessibility: visible focus everywhere */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 @utility text-flame { color: var(--flame); }
