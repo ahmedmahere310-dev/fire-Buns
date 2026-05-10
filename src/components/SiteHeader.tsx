@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/logo.png";
+import { RESTAURANT } from "@/data/menu";
+import { MessageCircle } from "lucide-react";
 
 export function SiteHeader() {
   return (
@@ -16,11 +18,17 @@ export function SiteHeader() {
           <Link to="/menu" className="px-3 py-2 rounded-md hover:bg-muted" activeProps={{ className: "text-flame" }}>
             المنيو
           </Link>
+          <Link to="/contact" className="px-3 py-2 rounded-md hover:bg-muted" activeProps={{ className: "text-flame" }}>
+            تواصل
+          </Link>
           <a
-            href="tel:01031131590"
-            className="ms-2 hidden sm:inline-flex items-center gap-2 rounded-full bg-gradient-flame text-primary-foreground px-4 py-2 shadow-flame hover:opacity-90 transition"
+            href={`https://wa.me/${RESTAURANT.whatsappNumber}?text=${encodeURIComponent("عايز أطلب من Fire Buns")}`}
+            target="_blank"
+            rel="noopener"
+            className="ms-2 inline-flex items-center gap-2 rounded-full bg-gradient-flame text-primary-foreground px-4 py-2 shadow-flame hover:opacity-90 transition"
           >
-            اطلب دلوقتي
+            <MessageCircle className="w-4 h-4" />
+            <span className="hidden sm:inline">اطلب واتساب</span>
           </a>
         </nav>
       </div>

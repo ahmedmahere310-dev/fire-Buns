@@ -145,7 +145,14 @@ export const RESTAURANT = {
   tagline: "طعم هتحبه",
   subtitle: "Burger & Fried Chicken",
   phones: ["01031131590", "01556557843"],
+  whatsappNumber: "201556557843",
   address: "قطور - شارع الخليج - أمام الرعاية الصحية",
+  hours: [
+    { days: "السبت – الخميس", time: "1:00 ظهرًا – 2:00 صباحًا" },
+    { days: "الجمعة", time: "2:00 ظهرًا – 2:00 صباحًا" },
+  ],
+  mapShortUrl: "https://maps.app.goo.gl/WQgQMDZfPVKM5N1X6",
+  mapEmbedUrl: "https://maps.google.com/maps?q=Fire%20Buns%20%D9%82%D8%B7%D9%88%D8%B1%20%D8%B4%D8%A7%D8%B1%D8%B9%20%D8%A7%D9%84%D8%AE%D9%84%D9%8A%D8%AC&hl=ar&z=17&output=embed",
   social: {
     facebook: "https://facebook.com",
     whatsapp: "https://wa.me/201556557843",

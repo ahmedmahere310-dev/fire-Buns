@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { RESTAURANT } from "@/data/menu";
 import logo from "@/assets/logo.png";
 
@@ -26,6 +27,9 @@ export function SiteFooter() {
               </li>
             ))}
             <li>📍 {RESTAURANT.address}</li>
+            <li>
+              <Link to="/contact" className="hover:text-flame">🗺️ الموقع وساعات العمل</Link>
+            </li>
           </ul>
         </div>
         <div>
