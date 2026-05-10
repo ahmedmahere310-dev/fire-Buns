@@ -212,6 +212,32 @@ export function CartDrawer() {
                   استلام من المحل
                 </button>
               </div>
+
+              {saved && !editingSaved ? (
+                <div className="rounded-xl border border-flame/30 bg-flame/5 p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-bold text-flame">
+                      <User className="w-4 h-4" />
+                      بياناتك المحفوظة
+                    </div>
+                    <div className="flex gap-1">
+                      <button onClick={() => setEditingSaved(true)} className="text-xs inline-flex items-center gap-1 px-2 py-1 rounded-full hover:bg-flame/10 text-flame">
+                        <Edit3 className="w-3 h-3" /> تعديل
+                      </button>
+                      <button onClick={clearSaved} className="text-xs px-2 py-1 rounded-full hover:bg-destructive/10 text-destructive">
+                        مسح
+                      </button>
+                    </div>
+                  </div>
+                  <div className="text-sm space-y-0.5">
+                    <div><span className="text-muted-foreground">الاسم:</span> <span className="font-bold">{saved.name}</span></div>
+                    <div><span className="text-muted-foreground">الموبايل:</span> <span className="font-bold">{saved.phone}</span></div>
+                    {orderType === "delivery" && saved.address && (
+                      <div className="break-words"><span className="text-muted-foreground">العنوان:</span> <span className="font-bold">{saved.address}</span></div>
+                    )}
+                  </div>
+                </div>
+              ) : null}
               <input
                 value={name} onChange={(e) => setName(e.target.value)}
                 placeholder="الاسم" className="w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-flame"
