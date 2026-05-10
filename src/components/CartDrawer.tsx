@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "@/lib/cart";
 import { RESTAURANT } from "@/data/menu";
-import { X, Plus, Minus, Trash2, MessageCircle, ShoppingBag, MapPin, Crosshair, Loader2 } from "lucide-react";
+import { X, Plus, Minus, Trash2, MessageCircle, ShoppingBag, MapPin, Crosshair, Loader2, User, Edit3 } from "lucide-react";
 import { CookingAnimation } from "./CookingAnimation";
+
+const STORAGE_KEY = "firebuns_customer_v1";
+type SavedCustomer = { name: string; phone: string; address: string };
 
 export function CartDrawer() {
   const { lines, setQty, remove, total, count, open, setOpen, clear } = useCart();
@@ -13,6 +16,36 @@ export function CartDrawer() {
   const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
   const [cooking, setCooking] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
+  const [saved, setSaved] = useState<SavedCustomer | null>(null);
+  const [editingSaved, setEditingSaved] = useState(false);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const s = JSON.parse(raw) as SavedCustomer;
+        setSaved(s);
+        setName(s.name || "");
+        setPhone(s.phone || "");
+        setAddress(s.address || "");
+      }
+    } catch {}
+  }, []);
+
+  function persist(next: SavedCustomer) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      setSaved(next);
+    } catch {}
+  }
+
+  function clearSaved() {
+    if (!confirm("تمسح بياناتك المحفوظة؟")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    setSaved(null);
+    setName(""); setPhone(""); setAddress("");
+    setEditingSaved(false);
+  }
   const [mapHint, setMapHint] = useState(false);
 
   function tryGeolocation(attempt: number) {
