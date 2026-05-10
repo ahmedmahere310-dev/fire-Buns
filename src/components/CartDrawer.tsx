@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useCart } from "@/lib/cart";
 import { RESTAURANT } from "@/data/menu";
 import { X, Plus, Minus, Trash2, MessageCircle, ShoppingBag } from "lucide-react";
+import { CookingAnimation } from "./CookingAnimation";
 
 export function CartDrawer() {
   const { lines, setQty, remove, total, count, open, setOpen, clear } = useCart();
@@ -10,6 +11,7 @@ export function CartDrawer() {
   const [address, setAddress] = useState("");
   const [notes, setNotes] = useState("");
   const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
+  const [cooking, setCooking] = useState(false);
 
   function buildMessage() {
     const lns = lines
@@ -34,6 +36,12 @@ export function CartDrawer() {
       alert("من فضلك اكتب الاسم والموبايل والعنوان");
       return;
     }
+    setOpen(false);
+    setCooking(true);
+  }
+
+  function finishCooking() {
+    setCooking(false);
     const url = `https://wa.me/${RESTAURANT.whatsappNumber}?text=${encodeURIComponent(buildMessage())}`;
     window.open(url, "_blank");
   }
@@ -43,11 +51,11 @@ export function CartDrawer() {
       {/* Floating cart button */}
       <button
         onClick={() => setOpen(true)}
-        aria-label="عربة الطلبات"
+        aria-label="طلباتي"
         className="fixed bottom-5 left-5 z-40 inline-flex items-center gap-2 rounded-full bg-gradient-flame text-primary-foreground font-bold px-5 py-3 shadow-flame hover:scale-105 transition"
       >
         <ShoppingBag className="w-5 h-5" />
-        <span>عربتي</span>
+        <span>طلباتي</span>
         {count > 0 && (
           <span className="bg-background text-foreground rounded-full text-xs font-bold w-6 h-6 flex items-center justify-center">
             {count}
@@ -71,7 +79,7 @@ export function CartDrawer() {
       >
         <header className="flex items-center justify-between p-4 border-b border-border">
           <div>
-            <h2 className="text-2xl text-charcoal">عربة الطلبات</h2>
+            <h2 className="text-2xl text-charcoal">طلباتي</h2>
             <p className="text-xs text-muted-foreground">{count} صنف</p>
           </div>
           <button onClick={() => setOpen(false)} className="p-2 rounded-full hover:bg-muted">
@@ -83,7 +91,7 @@ export function CartDrawer() {
           {lines.length === 0 ? (
             <div className="text-center py-16 text-muted-foreground">
               <ShoppingBag className="w-12 h-12 mx-auto mb-3 opacity-40" />
-              <p>عربتك فاضية. اختار من المنيو وابدأ طلبك 🔥</p>
+              <p>طلباتك فاضية. اختار من المنيو وابدأ طلبك 🔥</p>
             </div>
           ) : (
             lines.map((l) => (
@@ -165,7 +173,7 @@ export function CartDrawer() {
               ابعت الطلب على واتساب
             </button>
             <button onClick={clear} className="w-full text-xs text-muted-foreground hover:text-destructive">
-              تفريغ العربة
+              تفريغ الطلبات
             </button>
           </footer>
         )}
