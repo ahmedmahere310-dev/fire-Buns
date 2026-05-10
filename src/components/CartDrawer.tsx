@@ -13,13 +13,9 @@ export function CartDrawer() {
   const [orderType, setOrderType] = useState<"delivery" | "pickup">("delivery");
   const [cooking, setCooking] = useState(false);
   const [geoLoading, setGeoLoading] = useState(false);
+  const [mapHint, setMapHint] = useState(false);
 
-  function pickCurrentLocation() {
-    if (!navigator.geolocation) {
-      alert("متصفحك مش بيدعم تحديد الموقع");
-      return;
-    }
-    setGeoLoading(true);
+  function tryGeolocation(attempt: number) {
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
@@ -27,17 +23,38 @@ export function CartDrawer() {
         setAddress((prev) => (prev ? `${prev}\n📍 ${link}` : `📍 ${link}`));
         setGeoLoading(false);
       },
-      () => {
-        alert("معرفناش نحدد موقعك. اكتب العنوان يدوي أو اختار من الخريطة.");
+      (err) => {
+        if (attempt < 2) {
+          // محاولة تانية
+          setTimeout(() => tryGeolocation(attempt + 1), 600);
+          return;
+        }
         setGeoLoading(false);
+        if (err.code === err.PERMISSION_DENIED) {
+          alert("⚠️ لازم تفعّل إذن تحديد الموقع (GPS) من إعدادات المتصفح وتحاول تاني، أو استخدم اختار من الخريطة.");
+        } else {
+          alert("⚠️ معرفناش نحدد موقعك. تأكد إن الـ GPS مفعّل وحاول تاني، أو اختار من الخريطة.");
+        }
       },
-      { enableHighAccuracy: true, timeout: 10000 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
 
+  function pickCurrentLocation() {
+    if (!navigator.geolocation) {
+      alert("⚠️ متصفحك مش بيدعم تحديد الموقع. فعّل الـ GPS أو استخدم اختار من الخريطة.");
+      return;
+    }
+    setGeoLoading(true);
+    tryGeolocation(1);
+  }
+
   function pickFromMap() {
-    window.open("https://www.google.com/maps", "_blank");
-    alert("اختار النقطة على الخريطة، اضغط Share → Copy link، وارجع الصق اللينك في خانة العنوان.");
+    setMapHint(true);
+  }
+
+  function openMapsNow() {
+    window.open("https://www.google.com/maps", "_blank", "noopener,noreferrer");
   }
 
   function buildMessage() {
@@ -228,6 +245,42 @@ export function CartDrawer() {
       </aside>
 
       <CookingAnimation open={cooking} onDone={finishCooking} />
+
+      {/* Floating hint for picking from map */}
+      {mapHint && (
+        <div className="fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-4 bg-black/70 backdrop-blur-sm" onClick={() => setMapHint(false)}>
+          <div onClick={(e) => e.stopPropagation()} className="w-full max-w-md rounded-2xl bg-card border border-border shadow-2xl p-5 space-y-4 animate-in fade-in slide-in-from-bottom-4">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-flame/15 text-flame flex items-center justify-center shrink-0">
+                <MapPin className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg mb-1">اختار موقعك من الخريطة</h3>
+                <ol className="text-sm text-muted-foreground space-y-1.5 list-decimal ps-4">
+                  <li>هيتفتحلك Google Maps في تاب جديد.</li>
+                  <li>اضغط مطوّل على المكان اللي عايزه على الخريطة.</li>
+                  <li>اضغط <span className="font-bold text-foreground">Share</span> ← <span className="font-bold text-foreground">Copy link</span>.</li>
+                  <li>ارجع هنا والصق اللينك في خانة العنوان 👇</li>
+                </ol>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { openMapsNow(); setMapHint(false); }}
+                className="flex-1 rounded-full bg-gradient-flame text-primary-foreground font-bold py-2.5 text-sm shadow-flame"
+              >
+                افتح Google Maps
+              </button>
+              <button
+                onClick={() => setMapHint(false)}
+                className="rounded-full border border-border px-4 py-2.5 text-sm font-bold hover:bg-muted"
+              >
+                إلغاء
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
