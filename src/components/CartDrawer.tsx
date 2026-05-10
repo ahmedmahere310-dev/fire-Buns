@@ -178,6 +178,8 @@ export function CartDrawer() {
           </footer>
         )}
       </aside>
+
+      <CookingAnimation open={cooking} onDone={finishCooking} />
     </>
   );
 }
