@@ -1,6 +1,8 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
+import { CartProvider } from "@/lib/cart";
+import { CartDrawer } from "@/components/CartDrawer";
 import {
   Outlet,
   Link,
@@ -113,9 +115,12 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SiteHeader />
-      <Outlet />
-      <SiteFooter />
+      <CartProvider>
+        <SiteHeader />
+        <Outlet />
+        <SiteFooter />
+        <CartDrawer />
+      </CartProvider>
     </QueryClientProvider>
   );
 }

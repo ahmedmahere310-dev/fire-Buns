@@ -1,12 +1,25 @@
 import type { MenuItem } from "@/data/menu";
-import { Flame } from "lucide-react";
+import { Flame, Plus } from "lucide-react";
+import { useCart } from "@/lib/cart";
 
-function PriceTag({ label, value }: { label?: string; value: number }) {
+const SIZE_LABEL: Record<string, string> = {
+  S: "S", M: "M", L: "L", D: "D", jar: "برطمان", add: "إضافة",
+};
+
+function AddBtn({ item, sizeKey, value }: { item: MenuItem; sizeKey?: string; value: number }) {
+  const { add } = useCart();
   return (
-    <div className="flex flex-col items-center justify-center min-w-[58px] rounded-full bg-gradient-flame text-primary-foreground shadow-flame px-3 py-1">
-      {label && <span className="text-[10px] font-bold opacity-90 leading-none">{label}</span>}
+    <button
+      onClick={() => add(item, sizeKey)}
+      className="group flex flex-col items-center justify-center min-w-[60px] rounded-2xl bg-gradient-flame text-primary-foreground shadow-flame px-3 py-1.5 hover:scale-105 active:scale-95 transition"
+      aria-label={`أضف ${item.nameAr}${sizeKey ? " " + SIZE_LABEL[sizeKey] : ""}`}
+    >
+      {sizeKey && <span className="text-[10px] font-bold opacity-90 leading-none">{SIZE_LABEL[sizeKey]}</span>}
       <span className="font-display text-xl leading-tight">{value}</span>
-    </div>
+      <span className="flex items-center gap-1 text-[10px] font-bold mt-0.5 opacity-90">
+        <Plus className="w-3 h-3" /> أضف
+      </span>
+    </button>
   );
 }
 
@@ -30,15 +43,15 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
         </div>
         <div className="flex flex-col gap-1.5 items-end">
           {typeof p === "number" ? (
-            <PriceTag value={p} />
+            <AddBtn item={item} value={p} />
           ) : (
             <div className="flex flex-wrap gap-1.5 justify-end">
-              {p.S !== undefined && <PriceTag label="S" value={p.S} />}
-              {p.M !== undefined && <PriceTag label="M" value={p.M} />}
-              {p.L !== undefined && <PriceTag label="L" value={p.L} />}
-              {p.D !== undefined && <PriceTag label="D" value={p.D} />}
-              {p.jar !== undefined && <PriceTag label="برطمان" value={p.jar} />}
-              {p.add !== undefined && <PriceTag label="إضافة" value={p.add} />}
+              {p.S !== undefined && <AddBtn item={item} sizeKey="S" value={p.S} />}
+              {p.M !== undefined && <AddBtn item={item} sizeKey="M" value={p.M} />}
+              {p.L !== undefined && <AddBtn item={item} sizeKey="L" value={p.L} />}
+              {p.D !== undefined && <AddBtn item={item} sizeKey="D" value={p.D} />}
+              {p.jar !== undefined && <AddBtn item={item} sizeKey="jar" value={p.jar} />}
+              {p.add !== undefined && <AddBtn item={item} sizeKey="add" value={p.add} />}
             </div>
           )}
         </div>
