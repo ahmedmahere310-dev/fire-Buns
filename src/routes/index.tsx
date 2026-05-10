@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import heroBurger from "@/assets/hero-burger.jpg";
 import { RESTAURANT, menu } from "@/data/menu";
-import { Flame, Phone, MapPin, Sparkles, Truck, Leaf, Clock } from "lucide-react";
+import { Flame, Phone, MapPin, Sparkles, Truck, Leaf, Clock, MessageCircle, Users, Tag } from "lucide-react";
+
+const wa = (text: string) => `https://wa.me/${RESTAURANT.whatsappNumber}?text=${encodeURIComponent(text)}`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
