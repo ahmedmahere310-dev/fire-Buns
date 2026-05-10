@@ -1,6 +1,7 @@
 import type { MenuItem } from "@/data/menu";
-import { Flame, Plus } from "lucide-react";
+import { Flame, Plus, Share2 } from "lucide-react";
 import { useCart } from "@/lib/cart";
+import { RESTAURANT } from "@/data/menu";
 
 const SIZE_LABEL: Record<string, string> = {
   S: "S", M: "M", L: "L", D: "D", jar: "برطمان", add: "إضافة",
@@ -23,6 +24,27 @@ function AddBtn({ item, sizeKey, value }: { item: MenuItem; sizeKey?: string; va
   );
 }
 
+function priceLine(item: MenuItem) {
+  const p = item.price;
+  if (typeof p === "number") return `${p} ج`;
+  return Object.entries(p)
+    .map(([k, v]) => `${SIZE_LABEL[k] || k}: ${v} ج`)
+    .join(" • ");
+}
+
+async function shareItem(item: MenuItem) {
+  const url = typeof window !== "undefined" ? window.location.origin : "";
+  const text = `🔥 ${item.nameAr}${item.nameEn ? ` (${item.nameEn})` : ""}\n${priceLine(item)}${item.desc ? `\n\n${item.desc}` : ""}\n\nاطلب من Fire Buns: ${url}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: `Fire Buns - ${item.nameAr}`, text, url });
+      return;
+    }
+  } catch { /* user cancelled */ }
+  // Fallback: WhatsApp share
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank", "noopener,noreferrer");
+}
+
 export function MenuItemCard({ item }: { item: MenuItem }) {
   const p = item.price;
   return (
@@ -32,9 +54,16 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
           {item.badge}
         </span>
       )}
+      <button
+        onClick={() => shareItem(item)}
+        aria-label={`شارك ${item.nameAr}`}
+        className="absolute top-3 end-3 w-8 h-8 rounded-full bg-muted/60 hover:bg-flame/20 text-muted-foreground hover:text-flame flex items-center justify-center transition"
+      >
+        <Share2 className="w-4 h-4" />
+      </button>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
-          <h3 className="flex items-center gap-2 text-2xl font-bold text-charcoal">
+          <h3 className="flex items-center gap-2 text-2xl font-bold text-charcoal pe-8">
             {item.nameAr}
             {item.hot && <Flame className="w-5 h-5 text-flame fill-flame" />}
           </h3>
